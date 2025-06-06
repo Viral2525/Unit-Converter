@@ -1,0 +1,707 @@
+Copy
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Unit Converter - Convert Any Unit Instantly</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        .conversion-item {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .conversion-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        .calculator-bg {
+            background: linear-gradient(145deg, #f0f9ff, #e0f2fe);
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-white rounded-full mb-4 shadow-lg">
+                <i class="fas fa-calculator text-2xl text-purple-600"></i>
+            </div>
+            <h1 class="text-4xl font-bold text-white mb-2">Unit Converter Express</h1>
+            <p class="text-white text-opacity-80">Convert any unit instantly with precision</p>
+        </div>
+
+        <!-- Quick Converter -->
+        <div class="glass-card rounded-2xl p-8 mb-12 max-w-4xl mx-auto">
+            <h2 class="text-2xl font-semibold text-white mb-6 text-center">
+                <i class="fas fa-bolt text-yellow-400 mr-2"></i>Quick Converter
+            </h2>
+            
+            <!-- Category Selection -->
+            <div class="grid grid-cols-2 md:grid-cols-6 gap-4 mb-8">
+                <button onclick="selectCategory('length')" class="category-btn bg-blue-500 hover:bg-blue-600 text-white py-3 px-4 rounded-lg transition-all duration-300 transform hover:scale-105 active">
+                    <i class="fas fa-ruler mr-2"></i>Length
+                </button>
+                <button onclick="selectCategory('weight')" class="category-btn bg-green-500 hover:bg-green-600 text-white py-3 px-4 rounded-lg transition-all duration-300 transform hover:scale-105">
+                    <i class="fas fa-weight-hanging mr-2"></i>Weight
+                </button>
+                <button onclick="selectCategory('temperature')" class="category-btn bg-red-500 hover:bg-red-600 text-white py-3 px-4 rounded-lg transition-all duration-300 transform hover:scale-105">
+                    <i class="fas fa-thermometer-half mr-2"></i>Temperature
+                </button>
+                <button onclick="selectCategory('area')" class="category-btn bg-purple-500 hover:bg-purple-600 text-white py-3 px-4 rounded-lg transition-all duration-300 transform hover:scale-105">
+                    <i class="fas fa-square mr-2"></i>Area
+                </button>
+                <button onclick="selectCategory('volume')" class="category-btn bg-yellow-500 hover:bg-yellow-600 text-white py-3 px-4 rounded-lg transition-all duration-300 transform hover:scale-105">
+                    <i class="fas fa-cube mr-2"></i>Volume
+                </button>
+                <button onclick="selectCategory('time')" class="category-btn bg-indigo-500 hover:bg-indigo-600 text-white py-3 px-4 rounded-lg transition-all duration-300 transform hover:scale-105">
+                    <i class="fas fa-clock mr-2"></i>Time
+                </button>
+            </div>
+
+            <!-- Conversion Interface -->
+            <div class="calculator-bg rounded-xl p-6">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- From -->
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">From:</label>
+                        <div class="space-y-3">
+                            <input type="number" id="fromValue" placeholder="Enter value" 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-lg"
+                                   oninput="convertUnits()">
+                            <select id="fromUnit" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" onchange="convertUnits()">
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- To -->
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">To:</label>
+                        <div class="space-y-3">
+                            <input type="number" id="toValue" placeholder="Result" readonly
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 text-lg font-semibold text-purple-600">
+                            <select id="toUnit" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" onchange="convertUnits()">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <button onclick="swapUnits()" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg transition-all duration-300 transform hover:scale-105">
+                        <i class="fas fa-exchange-alt mr-2"></i>Swap Units
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Common Conversions -->
+        <div class="glass-card rounded-2xl p-8 mb-12">
+            <h2 class="text-2xl font-semibold text-white mb-6 text-center">
+                <i class="fas fa-star text-yellow-400 mr-2"></i>Common Conversions
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-3">
+                    <div class="conversion-item bg-white bg-opacity-80 p-4 rounded-lg" onclick="quickConvert('length', 'cm', 'inches')">
+                        <i class="fas fa-ruler text-blue-500 mr-3"></i>cm to inches
+                    </div>
+                    <div class="conversion-item bg-white bg-opacity-80 p-4 rounded-lg" onclick="quickConvert('weight', 'kg', 'lbs')">
+                        <i class="fas fa-weight-hanging text-green-500 mr-3"></i>kg to lbs
+                    </div>
+                    <div class="conversion-item bg-white bg-opacity-80 p-4 rounded-lg" onclick="quickConvert('temperature', 'celsius', 'fahrenheit')">
+                        <i class="fas fa-thermometer-half text-red-500 mr-3"></i>Celsius to Fahrenheit
+                    </div>
+                    <div class="conversion-item bg-white bg-opacity-80 p-4 rounded-lg" onclick="quickConvert('length', 'mm', 'inches')">
+                        <i class="fas fa-ruler text-purple-500 mr-3"></i>mm to inches
+                    </div>
+                    <div class="conversion-item bg-white bg-opacity-80 p-4 rounded-lg" onclick="quickConvert('length', 'meters', 'feet')">
+                        <i class="fas fa-ruler text-blue-600 mr-3"></i>meters to feet
+                    </div>
+                    <div class="conversion-item bg-white bg-opacity-80 p-4 rounded-lg" onclick="quickConvert('length', 'km', 'miles')">
+                        <i class="fas fa-road text-yellow-600 mr-3"></i>km to miles
+                    </div>
+                    <div class="conversion-item bg-white bg-opacity-80 p-4 rounded-lg" onclick="quickConvert('length', 'cm', 'feet')">
+                        <i class="fas fa-ruler text-indigo-500 mr-3"></i>cm to feet
+                    </div>
+                    <div class="conversion-item bg-white bg-opacity-80 p-4 rounded-lg" onclick="quickConvert('weight', 'grams', 'ounces')">
+                        <i class="fas fa-balance-scale text-teal-500 mr-3"></i>grams to ounces
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <div class="conversion-item bg-white bg-opacity-80 p-4 rounded-lg" onclick="quickConvert('length', 'inches', 'cm')">
+                        <i class="fas fa-ruler text-blue-500 mr-3"></i>inches to cm
+                    </div>
+                    <div class="conversion-item bg-white bg-opacity-80 p-4 rounded-lg" onclick="quickConvert('weight', 'lbs', 'kg')">
+                        <i class="fas fa-weight-hanging text-green-500 mr-3"></i>lbs to kg
+                    </div>
+                    <div class="conversion-item bg-white bg-opacity-80 p-4 rounded-lg" onclick="quickConvert('temperature', 'fahrenheit', 'celsius')">
+                        <i class="fas fa-thermometer-half text-red-500 mr-3"></i>Fahrenheit to Celsius
+                    </div>
+                    <div class="conversion-item bg-white bg-opacity-80 p-4 rounded-lg" onclick="quickConvert('length', 'inches', 'mm')">
+                        <i class="fas fa-ruler text-purple-500 mr-3"></i>inches to mm
+                    </div>
+                    <div class="conversion-item bg-white bg-opacity-80 p-4 rounded-lg" onclick="quickConvert('length', 'feet', 'meters')">
+                        <i class="fas fa-ruler text-blue-600 mr-3"></i>feet to meters
+                    </div>
+                    <div class="conversion-item bg-white bg-opacity-80 p-4 rounded-lg" onclick="quickConvert('length', 'miles', 'km')">
+                        <i class="fas fa-road text-yellow-600 mr-3"></i>miles to km
+                    </div>
+                    <div class="conversion-item bg-white bg-opacity-80 p-4 rounded-lg" onclick="quickConvert('length', 'feet', 'cm')">
+                        <i class="fas fa-ruler text-indigo-500 mr-3"></i>feet to cm
+                    </div>
+                    <div class="conversion-item bg-white bg-opacity-80 p-4 rounded-lg" onclick="quickConvert('weight', 'ounces', 'grams')">
+                        <i class="fas fa-balance-scale text-teal-500 mr-3"></i>ounces to grams
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Find Units -->
+        <div class="glass-card rounded-2xl p-8 mb-12">
+            <h2 class="text-2xl font-semibold text-white mb-6 text-center">
+                <i class="fas fa-search text-blue-400 mr-2"></i>Find the Units to Convert
+            </h2>
+            <div class="calculator-bg rounded-xl p-6">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">From Unit:</label>
+                        <input type="text" id="searchFrom" placeholder="Type unit name (e.g., cm, kg, celsius)" 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                               oninput="searchUnits('from')">
+                        <div id="searchFromResults" class="mt-2 max-h-40 overflow-y-auto"></div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">To Unit:</label>
+                        <input type="text" id="searchTo" placeholder="Type unit name (e.g., inches, lbs, fahrenheit)" 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                               oninput="searchUnits('to')">
+                        <div id="searchToResults" class="mt-2 max-h-40 overflow-y-auto"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Complete Unit Converter Suite -->
+        <div class="glass-card rounded-2xl p-8">
+            <h2 class="text-2xl font-semibold text-white mb-8 text-center">
+                <i class="fas fa-cogs text-blue-400 mr-2"></i>Complete Unit Converter Suite
+            </h2>
+            
+            <!-- Popular Converters -->
+            <div class="mb-8">
+                <h3 class="text-xl font-semibold text-white mb-4">
+                    <i class="fas fa-star text-yellow-400 mr-2"></i>Popular Converters
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="conversion-item bg-white bg-opacity-90 p-6 rounded-lg" onclick="selectCategory('length')">
+                        <i class="fas fa-ruler text-blue-500 text-2xl mb-3"></i>
+                        <h4 class="font-semibold text-gray-800">Length Converter</h4>
+                        <p class="text-gray-600 text-sm">Convert between meters, feet, inches, and more</p>
+                    </div>
+                    <div class="conversion-item bg-white bg-opacity-90 p-6 rounded-lg" onclick="selectCategory('weight')">
+                        <i class="fas fa-weight-hanging text-green-500 text-2xl mb-3"></i>
+                        <h4 class="font-semibold text-gray-800">Weight & Mass</h4>
+                        <p class="text-gray-600 text-sm">Convert kilograms, pounds, ounces, and more</p>
+                    </div>
+                    <div class="conversion-item bg-white bg-opacity-90 p-6 rounded-lg" onclick="selectCategory('volume')">
+                        <i class="fas fa-cube text-blue-600 text-2xl mb-3"></i>
+                        <h4 class="font-semibold text-gray-800">Volume Converter</h4>
+                        <p class="text-gray-600 text-sm">Convert liters, gallons, cups, and more</p>
+                    </div>
+                    <div class="conversion-item bg-white bg-opacity-90 p-6 rounded-lg" onclick="selectCategory('temperature')">
+                        <i class="fas fa-thermometer-half text-red-500 text-2xl mb-3"></i>
+                        <h4 class="font-semibold text-gray-800">Temperature</h4>
+                        <p class="text-gray-600 text-sm">Convert Celsius, Fahrenheit, Kelvin</p>
+                    </div>
+                    <div class="conversion-item bg-white bg-opacity-90 p-6 rounded-lg" onclick="selectCategory('area')">
+                        <i class="fas fa-square text-purple-500 text-2xl mb-3"></i>
+                        <h4 class="font-semibold text-gray-800">Area Converter</h4>
+                        <p class="text-gray-600 text-sm">Convert square meters, acres, hectares</p>
+                    </div>
+                    <div class="conversion-item bg-white bg-opacity-90 p-6 rounded-lg" onclick="selectCategory('time')">
+                        <i class="fas fa-clock text-gray-600 text-2xl mb-3"></i>
+                        <h4 class="font-semibold text-gray-800">Time Converter</h4>
+                        <p class="text-gray-600 text-sm">Convert seconds, minutes, hours, days</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Engineering & Scientific -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-xl font-semibold text-white mb-4">
+                        <i class="fas fa-cog text-gray-400 mr-2"></i>Engineering Converters
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="conversion-item bg-white bg-opacity-80 p-4 rounded-lg" onclick="selectCategory('pressure')">
+                            <i class="fas fa-tachometer-alt text-blue-500 mr-3"></i>Pressure Converter
+                        </div>
+                        <div class="conversion-item bg-white bg-opacity-80 p-4 rounded-lg" onclick="selectCategory('energy')">
+                            <i class="fas fa-bolt text-yellow-500 mr-3"></i>Energy Converter
+                        </div>
+                        <div class="conversion-item bg-white bg-opacity-80 p-4 rounded-lg" onclick="selectCategory('power')">
+                            <i class="fas fa-plug text-red-500 mr-3"></i>Power Converter
+                        </div>
+                        <div class="conversion-item bg-white bg-opacity-80 p-4 rounded-lg" onclick="selectCategory('speed')">
+                            <i class="fas fa-tachometer-alt text-green-500 mr-3"></i>Speed Converter
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-xl font-semibold text-white mb-4">
+                        <i class="fas fa-atom text-purple-400 mr-2"></i>Scientific & Advanced
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="conversion-item bg-white bg-opacity-80 p-4 rounded-lg" onclick="selectCategory('angle')">
+                            <i class="fas fa-drafting-compass text-purple-500 mr-3"></i>Angle Converter
+                        </div>
+                        <div class="conversion-item bg-white bg-opacity-80 p-4 rounded-lg" onclick="selectCategory('frequency')">
+                            <i class="fas fa-wave-square text-blue-500 mr-3"></i>Frequency Converter
+                        </div>
+                        <div class="conversion-item bg-white bg-opacity-80 p-4 rounded-lg" onclick="selectCategory('data')">
+                            <i class="fas fa-hdd text-indigo-500 mr-3"></i>Data Storage
+                        </div>
+                        <div class="conversion-item bg-white bg-opacity-80 p-4 rounded-lg" onclick="selectCategory('currency')">
+                            <i class="fas fa-dollar-sign text-green-500 mr-3"></i>Currency Converter
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-12 text-white text-opacity-70">
+            <p>A modern, comprehensive unit conversion tool for all your measurement needs.</p>
+        </div>
+    </div>
+
+    <script>
+        // Conversion factors and definitions
+        const conversions = {
+            length: {
+                units: ['mm', 'cm', 'meters', 'km', 'inches', 'feet', 'yards', 'miles'],
+                factors: {
+                    mm: 1,
+                    cm: 10,
+                    meters: 1000,
+                    km: 1000000,
+                    inches: 25.4,
+                    feet: 304.8,
+                    yards: 914.4,
+                    miles: 1609344
+                }
+            },
+            weight: {
+                units: ['grams', 'kg', 'ounces', 'lbs', 'tons'],
+                factors: {
+                    grams: 1,
+                    kg: 1000,
+                    ounces: 28.3495,
+                    lbs: 453.592,
+                    tons: 1000000
+                }
+            },
+            temperature: {
+                units: ['celsius', 'fahrenheit', 'kelvin'],
+                convert: function(value, from, to) {
+                    let celsius;
+                    if (from === 'celsius') celsius = value;
+                    else if (from === 'fahrenheit') celsius = (value - 32) * 5/9;
+                    else if (from === 'kelvin') celsius = value - 273.15;
+                    
+                    if (to === 'celsius') return celsius;
+                    else if (to === 'fahrenheit') return celsius * 9/5 + 32;
+                    else if (to === 'kelvin') return celsius + 273.15;
+                }
+            },
+            area: {
+                units: ['sq_mm', 'sq_cm', 'sq_meters', 'sq_km', 'sq_inches', 'sq_feet', 'acres', 'hectares'],
+                factors: {
+                    sq_mm: 1,
+                    sq_cm: 100,
+                    sq_meters: 1000000,
+                    sq_km: 1000000000000,
+                    sq_inches: 645.16,
+                    sq_feet: 92903.04,
+                    acres: 4046856422.4,
+                    hectares: 10000000000
+                }
+            },
+            volume: {
+                units: ['ml', 'liters', 'gallons', 'cups', 'pints', 'quarts', 'fl_ounces'],
+                factors: {
+                    ml: 1,
+                    liters: 1000,
+                    gallons: 3785.41,
+                    cups: 236.588,
+                    pints: 473.176,
+                    quarts: 946.353,
+                    fl_ounces: 29.5735
+                }
+            },
+            time: {
+                units: ['seconds', 'minutes', 'hours', 'days', 'weeks', 'months', 'years'],
+                factors: {
+                    seconds: 1,
+                    minutes: 60,
+                    hours: 3600,
+                    days: 86400,
+                    weeks: 604800,
+                    months: 2629746,
+                    years: 31556952
+                }
+            },
+            pressure: {
+                units: ['pascal', 'bar', 'psi', 'atm', 'torr'],
+                factors: {
+                    pascal: 1,
+                    bar: 100000,
+                    psi: 6894.76,
+                    atm: 101325,
+                    torr: 133.322
+                }
+            },
+            energy: {
+                units: ['joule', 'calorie', 'kwh', 'btu'],
+                factors: {
+                    joule: 1,
+                    calorie: 4.184,
+                    kwh: 3600000,
+                    btu: 1055.06
+                }
+            },
+            power: {
+                units: ['watt', 'kilowatt', 'horsepower', 'btu_per_hour'],
+                factors: {
+                    watt: 1,
+                    kilowatt: 1000,
+                    horsepower: 745.7,
+                    btu_per_hour: 0.293071
+                }
+            },
+            speed: {
+                units: ['mps', 'kph', 'mph', 'knots'],
+                factors: {
+                    mps: 1,
+                    kph: 0.277778,
+                    mph: 0.44704,
+                    knots: 0.514444
+                }
+            },
+            angle: {
+                units: ['degrees', 'radians', 'gradians'],
+                factors: {
+                    degrees: 1,
+                    radians: 57.2958,
+                    gradians: 0.9
+                }
+            },
+            frequency: {
+                units: ['hertz', 'kilohertz', 'megahertz', 'gigahertz'],
+                factors: {
+                    hertz: 1,
+                    kilohertz: 1000,
+                    megahertz: 1000000,
+                    gigahertz: 1000000000
+                }
+            },
+            data: {
+                units: ['bytes', 'kilobytes', 'megabytes', 'gigabytes', 'terabytes'],
+                factors: {
+                    bytes: 1,
+                    kilobytes: 1024,
+                    megabytes: 1048576,
+                    gigabytes: 1073741824,
+                    terabytes: 1099511627776
+                }
+            },
+            currency: {
+                units: ['usd', 'eur', 'gbp', 'jpy', 'cad'],
+                note: 'Currency rates are approximate and for demonstration only'
+            }
+        };
+
+        let currentCategory = 'length';
+
+        // Initialize the page
+        function init() {
+            selectCategory('length');
+        }
+
+        // Select category and update dropdowns
+        function selectCategory(category) {
+            currentCategory = category;
+            
+            // Update active button
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active', 'ring-4', 'ring-white', 'ring-opacity-50');
+            });
+            event.target.classList.add('active', 'ring-4', 'ring-white', 'ring-opacity-50');
+            
+            updateDropdowns();
+        }
+
+        // Update dropdowns based on selected category
+        function updateDropdowns() {
+            const fromSelect = document.getElementById('fromUnit');
+            const toSelect = document.getElementById('toUnit');
+            
+            fromSelect.innerHTML = '';
+            toSelect.innerHTML = '';
+            
+            if (conversions[currentCategory] && conversions[currentCategory].units) {
+                conversions[currentCategory].units.forEach(unit => {
+                    const option1 = new Option(formatUnitName(unit), unit);
+                    const option2 = new Option(formatUnitName(unit), unit);
+                    fromSelect.appendChild(option1);
+                    toSelect.appendChild(option2);
+                });
+                
+                // Set default selections
+                if (conversions[currentCategory].units.length > 1) {
+                    toSelect.selectedIndex = 1;
+                }
+            }
+            
+            convertUnits();
+        }
+
+        // Format unit names for display
+        function formatUnitName(unit) {
+            const names = {
+                mm: 'Millimeters',
+                cm: 'Centimeters',
+                meters: 'Meters',
+                km: 'Kilometers',
+                inches: 'Inches',
+                feet: 'Feet',
+                yards: 'Yards',
+                miles: 'Miles',
+                grams: 'Grams',
+                kg: 'Kilograms',
+                ounces: 'Ounces',
+                lbs: 'Pounds',
+                tons: 'Tons',
+                celsius: 'Celsius',
+                fahrenheit: 'Fahrenheit',
+                kelvin: 'Kelvin',
+                sq_mm: 'Square Millimeters',
+                sq_cm: 'Square Centimeters',
+                sq_meters: 'Square Meters',
+                sq_km: 'Square Kilometers',
+                sq_inches: 'Square Inches',
+                sq_feet: 'Square Feet',
+                acres: 'Acres',
+                hectares: 'Hectares',
+                ml: 'Milliliters',
+                liters: 'Liters',
+                gallons: 'Gallons',
+                cups: 'Cups',
+                pints: 'Pints',
+                quarts: 'Quarts',
+                fl_ounces: 'Fluid Ounces',
+                seconds: 'Seconds',
+                minutes: 'Minutes',
+                hours: 'Hours',
+                days: 'Days',
+                weeks: 'Weeks',
+                months: 'Months',
+                years: 'Years',
+                pascal: 'Pascal',
+                bar: 'Bar',
+                psi: 'PSI',
+                atm: 'Atmosphere',
+                torr: 'Torr',
+                joule: 'Joule',
+                calorie: 'Calorie',
+                kwh: 'Kilowatt Hour',
+                btu: 'BTU',
+                watt: 'Watt',
+                kilowatt: 'Kilowatt',
+                horsepower: 'Horsepower',
+                btu_per_hour: 'BTU/Hour',
+                mps: 'Meters/Second',
+                kph: 'Kilometers/Hour',
+                mph: 'Miles/Hour',
+                knots: 'Knots',
+                degrees: 'Degrees',
+                radians: 'Radians',
+                gradians: 'Gradians',
+                hertz: 'Hertz',
+                kilohertz: 'Kilohertz',
+                megahertz: 'Megahertz',
+                gigahertz: 'Gigahertz',
+                bytes: 'Bytes',
+                kilobytes: 'Kilobytes',
+                megabytes: 'Megabytes',
+                gigabytes: 'Gigabytes',
+                terabytes: 'Terabytes'
+            };
+            return names[unit] || unit.charAt(0).toUpperCase() + unit.slice(1);
+        }
+
+        // Convert units
+        function convertUnits() {
+            const fromValue = parseFloat(document.getElementById('fromValue').value) || 0;
+            const fromUnit = document.getElementById('fromUnit').value;
+            const toUnit = document.getElementById('toUnit').value;
+            
+            if (!fromUnit || !toUnit || !conversions[currentCategory]) {
+                document.getElementById('toValue').value = '';
+                return;
+            }
+            
+            let result;
+            
+            if (currentCategory === 'temperature') {
+                result = conversions.temperature.convert(fromValue, fromUnit, toUnit);
+            } else if (conversions[currentCategory].factors) {
+                const fromFactor = conversions[currentCategory].factors[fromUnit];
+                const toFactor = conversions[currentCategory].factors[toUnit];
+                if (fromFactor && toFactor) {
+                    result = (fromValue * fromFactor) / toFactor;
+                }
+            }
+            
+            if (result !== undefined) {
+                document.getElementById('toValue').value = result.toFixed(6).replace(/\.?0+$/, '');
+            }
+        }
+
+        // Swap units
+        function swapUnits() {
+            const fromSelect = document.getElementById('fromUnit');
+            const toSelect = document.getElementById('toUnit');
+            const fromValue = document.getElementById('fromValue');
+            const toValue = document.getElementById('toValue');
+            
+            // Swap selections
+            const tempIndex = fromSelect.selectedIndex;
+            fromSelect.selectedIndex = toSelect.selectedIndex;
+            toSelect.selectedIndex = tempIndex;
+            
+            // Swap values
+            const tempValue = fromValue.value;
+            fromValue.value = toValue.value;
+            
+            convertUnits();
+        }
+
+        // Quick convert function for common conversions
+        function quickConvert(category, fromUnit, toUnit) {
+            selectCategoryDirect(category);
+            
+            setTimeout(() => {
+                const fromSelect = document.getElementById('fromUnit');
+                const toSelect = document.getElementById('toUnit');
+                
+                // Find and select the units
+                for (let i = 0; i < fromSelect.options.length; i++) {
+                    if (fromSelect.options[i].value === fromUnit) {
+                        fromSelect.selectedIndex = i;
+                        break;
+                    }
+                }
+                
+                for (let i = 0; i < toSelect.options.length; i++) {
+                    if (toSelect.options[i].value === toUnit) {
+                        toSelect.selectedIndex = i;
+                        break;
+                    }
+                }
+                
+                document.getElementById('fromValue').value = '1';
+                convertUnits();
+                
+                // Scroll to converter
+                document.querySelector('.calculator-bg').scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+        }
+
+        function selectCategoryDirect(category) {
+            currentCategory = category;
+            
+            // Update active button
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active', 'ring-4', 'ring-white', 'ring-opacity-50');
+                if (btn.textContent.toLowerCase().includes(category)) {
+                    btn.classList.add('active', 'ring-4', 'ring-white', 'ring-opacity-50');
+                }
+            });
+            
+            updateDropdowns();
+        }
+
+        // Search units functionality
+        function searchUnits(type) {
+            const searchInput = document.getElementById(`search${type.charAt(0).toUpperCase() + type.slice(1)}`);
+            const resultsDiv = document.getElementById(`search${type.charAt(0).toUpperCase() + type.slice(1)}Results`);
+            const query = searchInput.value.toLowerCase();
+            
+            if (query.length < 2) {
+                resultsDiv.innerHTML = '';
+                return;
+            }
+            
+            let results = [];
+            
+            // Search through all categories and units
+            Object.entries(conversions).forEach(([category, data]) => {
+                if (data.units) {
+                    data.units.forEach(unit => {
+                        const unitName = formatUnitName(unit).toLowerCase();
+                        if (unitName.includes(query) || unit.includes(query)) {
+                            results.push({
+                                category: category,
+                                unit: unit,
+                                name: formatUnitName(unit)
+                            });
+                        }
+                    });
+                }
+            });
+            
+            // Display results
+            resultsDiv.innerHTML = results.slice(0, 5).map(result => 
+                `<div class="cursor-pointer p-2 bg-white rounded border hover:bg-gray-100" 
+                      onclick="selectSearchResult('${result.category}', '${result.unit}', '${type}')">
+                    ${result.name} (${result.category})
+                </div>`
+            ).join('');
+        }
+
+        function selectSearchResult(category, unit, type) {
+            if (category !== currentCategory) {
+                selectCategoryDirect(category);
+            }
+            
+            setTimeout(() => {
+                const select = document.getElementById(type === 'from' ? 'fromUnit' : 'toUnit');
+                for (let i = 0; i < select.options.length; i++) {
+                    if (select.options[i].value === unit) {
+                        select.selectedIndex = i;
+                        break;
+                    }
+                }
+                convertUnits();
+                
+                // Clear search
+                document.getElementById(`search${type.charAt(0).toUpperCase() + type.slice(1)}`).value = '';
+                document.getElementById(`search${type.charAt(0).toUpperCase() + type.slice(1)}Results`).innerHTML = '';
+            }, 100);
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
